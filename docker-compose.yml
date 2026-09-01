@@ -1,0 +1,49 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"   # optional — lets you connect a GUI (Compass) from the host
+
+  ml-service:
+    build: ./ml-service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"     # optional — handy for hitting /categorize directly while testing
+    volumes:
+      # Mount data/model dirs so you can drop the Kaggle CSV in and re-train
+      # without rebuilding the image.
+      - ./ml-service/data:/app/data
+      - ./ml-service/model:/app/model
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - ml-service
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/expense_tracker
+      JWT_SECRET: ${JWT_SECRET:-change_this_to_a_long_random_secret}
+      JWT_EXPIRES_IN: 7d
+      ML_SERVICE_URL: http://ml-service:8000
+      CLIENT_URL: http://localhost:8080
+    ports:
+      - "5000:5000"     # optional — handy for hitting the API directly while testing
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  mongo_data:
