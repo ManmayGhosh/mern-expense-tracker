@@ -88,6 +88,10 @@ instead of a flat estimate.
 
 ## Running everything in Docker
 
+**Note:** this section is for local development/testing. For deploying to
+production as separate hosted services (Render, Vercel, Atlas, etc.) instead
+of one compose stack, see **[DEPLOYMENT.md](./DEPLOYMENT.md)**.
+
 This spins up all four pieces — MongoDB, the Express API, the FastAPI ML
 service, and the React app served by nginx — with one command.
 
