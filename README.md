@@ -3,6 +3,9 @@
 Full-stack expense tracker: MERN app + a Python ML microservice for
 auto-categorizing transactions and forecasting next month's spend.
 
+**[Live demo](https://mern-expense-tracker-sable-zeta.vercel.app/login)**
+---
+
 ```
 expense-tracker/
 ├── backend/       Express + MongoDB API (auth, expenses, aggregation)
